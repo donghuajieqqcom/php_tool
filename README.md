@@ -10,6 +10,8 @@
 
 4.修改canonicial
 
+5.TDK修改在web.php
+
 
 
 ## 运行步骤
@@ -31,6 +33,9 @@
 ## 目录权限参考代码
 
 ```
+listen 8008
+
+# 配置目录权限
 <Directory "d:\aliyun_workspace\php_tool">
     Options Indexes FollowSymLinks
     AllowOverride All
@@ -51,44 +56,25 @@
 </VirtualHost>
 ```
 
+ 
+## nginx转发
 
-## 安装
+```
+server {
+    listen 80;
+    server_name xxxxx.com;  #  你的域名 
 
-使用composer安装
-
-~~~
-composer create-project topthink/think tp
-~~~
-
-启动服务
-
-~~~
-cd tp
-php think run
-~~~
-
-然后就可以在浏览器中访问
-
-~~~
-http://localhost:8000
-~~~
-
-更新框架
-~~~
-composer update topthink/framework
-~~~
-
-
-## 在线手册
-
-+ [完全开发手册](https://www.kancloud.cn/manual/thinkphp5_1/content)
-+ [升级指导](https://www.kancloud.cn/manual/thinkphp5_1/354155) 
-
-
-## 官方服务
-
-+ [应用服务市场](https://market.topthink.com/)
-+ [ThinkAPI——统一API服务](https://docs.topthink.com/think-api) 
+    location / {
+        proxy_pass http://127.0.0.1:8008;
+        
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+ 
 
 ## 目录结构
 
@@ -188,20 +174,5 @@ www  WEB部署目录（或者子目录）
 
 *   数据表和字段采用小写加下划线方式命名，并注意字段名不要以下划线开头，例如 `think_user` 表和 `user_name`字段，不建议使用驼峰和中文作为数据表字段命名。
 
-## 参与开发
+ 
 
-请参阅 [ThinkPHP5 核心框架包](https://github.com/top-think/framework)。
-
-## 版权信息
-
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
-
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
-
-版权所有Copyright © 2006-2018 by ThinkPHP (http://thinkphp.cn)
-
-All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
-
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
